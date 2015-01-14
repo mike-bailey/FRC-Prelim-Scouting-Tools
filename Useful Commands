@@ -1,0 +1,10 @@
+# Where teamno is team number, return FIRST's primary webpage code associated with said number
+read teamno
+lynx --dump http://www.google.com/search?q=team\ number\ $teamno\ site\:usfirst\.org | grep -Po '(?<=(\/team\/)).*?(?= ?ProgramCode)' | sed 's/?//g' | head -1 > /tmp/$teamno
+teamhtmlref=$(cat /tmp/$teamno)
+rm -rf /tmp/$teamno
+# Now that we have team reference, go ahead and wget its profile from FIRST
+wget http://www.usfirst.org/whats-going-on/team/29001?ProgramCode=FRC
+# Great now package it into a PDF
+# THIS REQUIRES AN X SERVER UNLESS YOU GET NICE WITH WKHTMLTOPDF
+wkhtmltopdf $teamhtmlref\?ProgramCode\=FRC $teamno-competitionhistory.pdf
